@@ -15,7 +15,7 @@ from drf_yasg.utils import swagger_auto_schema
 # from rest_framework.permissions import IsAdminUser, IsAuthenticated,AllowAny
 
 class ProductViewSet(ModelViewSet):
-    queryset = Product.objects.all()
+    
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend,SearchFilter,OrderingFilter ]
     filterset_class = ProductFilter
@@ -24,6 +24,8 @@ class ProductViewSet(ModelViewSet):
     pagination_class = DefaultPagination
     permission_classes = [IsAdminOrReadOnly]
 
+    def get_queryset(self):
+        return Product.objects.prefetch_related('images').all()
     @swagger_auto_schema(operation_summary="Retrieve all products")
     def list(self, request, *args, **kwargs):
         """Retrieve all the products"""
